@@ -62,7 +62,7 @@ function azureBlob (opts) {
   }
 
   that.rename = function (src, dest, cb) {
-    blobs.startCopyBlob(`https://carystablobs.blob.core.windows.net/${containerName}/${src}`, containerName, dest, oncopy)
+    blobs.startCopyBlob(blobs.getUrl(containerName, src), containerName, dest, oncopy)
 
     function oncopy (err) {
       if (err) return cb(err)
@@ -88,7 +88,7 @@ function azureBlob (opts) {
     var token = null
     var lastSegment = false
     var count = 0
-    var prefix = options.prefix || null
+    var prefix = opts.prefix || null
 
     return strm
 
