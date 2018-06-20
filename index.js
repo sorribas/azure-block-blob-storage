@@ -58,7 +58,15 @@ function azureBlob (opts) {
   }
 
   that.createWriteStream = function (key) {
-    return blobs.createWriteStreamToBlockBlob(containerName, key, function () {})
+    var s = blobs.createWriteStreamToBlockBlob(containerName, key, function () {})
+
+    var emit = s.emit
+    s.emit = function (name) {
+      if (name !== 'close') return emit.apply(this, arguments)
+      process.nextTick(() => emit.call(this, 'close'))
+    }
+
+    return s
   }
 
   that.rename = function (src, dest, cb) {
